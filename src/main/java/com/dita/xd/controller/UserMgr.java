@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import com.dita.xd.model.UserBean;
+import com.dita.xd.service.implementation.DBConnectionMgr1;
 
 
 public class UserMgr {
@@ -80,9 +81,5 @@ public class UserMgr {
 		System.out.println("userEmail : "+ bean.getEmail());
 		System.out.println("userPassword : "+ bean.getPassword());
 		return bean;                                                 
-	}
-	public static void main(String[] args) {
-		UserMgr mgr =  new UserMgr();
-		//mgr.getUser("aaa");
 	}
 }

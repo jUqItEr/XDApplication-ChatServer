@@ -1,4 +1,4 @@
-package com.dita.xd.controller;
+package com.dita.xd.service.implementation;
 
 /**
  * Copyright(c) 2001 iSavvix Corporation (http://www.isavvix.com/)
