@@ -8,18 +8,22 @@ public class ChatMessageBean {
     private String content;
     private int chatroomId;
     private String userId;
+    private String userNickname;
+    private String userProfileImage;
     private Timestamp createdAt;
-    private char readState;
+    private String readState;
 
     public ChatMessageBean() {
     }
 
-    public ChatMessageBean(int id, String content, int chatroomTblId,
-                           String userTblId, Timestamp createdAt, char readState) {
+    public ChatMessageBean(int id, String content, int chatroomId, String userId, String userNickname,
+                           String userProfileImage, Timestamp createdAt, String readState) {
         this.id = id;
         this.content = content;
-        this.chatroomId = chatroomTblId;
-        this.userId = userTblId;
+        this.chatroomId = chatroomId;
+        this.userId = userId;
+        this.userNickname = userNickname;
+        this.userProfileImage = userProfileImage;
         this.createdAt = createdAt;
         this.readState = readState;
     }
@@ -56,6 +60,22 @@ public class ChatMessageBean {
         this.userId = userId;
     }
 
+    public String getUserNickname() {
+        return userNickname;
+    }
+
+    public void setUserNickname(String userNickname) {
+        this.userNickname = userNickname;
+    }
+
+    public String getUserProfileImage() {
+        return userProfileImage;
+    }
+
+    public void setUserProfileImage(String userProfileImage) {
+        this.userProfileImage = userProfileImage;
+    }
+
     public Timestamp getCreatedAt() {
         return createdAt;
     }
@@ -64,11 +84,11 @@ public class ChatMessageBean {
         this.createdAt = createdAt;
     }
 
-    public char getReadState() {
+    public String getReadState() {
         return readState;
     }
 
-    public void setReadState(char readState) {
+    public void setReadState(String readState) {
         this.readState = readState;
     }
 }

@@ -7,12 +7,12 @@ import java.sql.Timestamp;
 import java.util.Vector;
 
 import com.dita.xd.model.ChatMessageBean;
-import com.dita.xd.service.implementation.DBConnectionMgr1;
+import com.dita.xd.service.implementation.DBConnectionServiceImpl;
 
 public class ChatMessageMgr {
-	private DBConnectionMgr1 pool;
+	private DBConnectionServiceImpl pool;
 	public ChatMessageMgr() {
-		pool = DBConnectionMgr1.getInstance();
+		pool = DBConnectionServiceImpl.getInstance();
 	}
 
 	public boolean loginChk(String id, String pwd) {
@@ -94,7 +94,7 @@ public class ChatMessageMgr {
 				bean.setChatroomId(rs.getInt("chatroom_tbl_id")); // 세션 id
 				bean.setUserId(rs.getString("user_tbl_id"));      //작성자 id
 				bean.setCreatedAt(rs.getTimestamp("created_at")); //작성시각
-				bean.setReadState(rs.getString("read_state").charAt(0));
+				//bean.setReadState(rs.getString("read_state").charAt(0));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -127,7 +127,7 @@ public class ChatMessageMgr {
 				bean.setChatroomId(rs.getInt(3));           // 채팅방의 세션 아이디
 				bean.setUserId(rs.getString(4));          // 채팅방에서 채팅 작성자id
 				bean.setCreatedAt(Timestamp.valueOf(rs.getString(5)));      // chat_message의 언제 썼는지
-				bean.setReadState(rs.getString(6).charAt(0));
+				// bean.setReadState(rs.getString(6).charAt(0));
 				vlist.addElement(bean);                  // vlist에 저장
 			}
 

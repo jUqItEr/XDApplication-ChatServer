@@ -26,6 +26,8 @@ package com.dita.xd.service.implementation;
  */
 
 
+import com.dita.xd.util.database.ConnectionObject;
+
 import java.sql.*;
 import java.util.Properties;
 import java.util.Vector;
@@ -36,7 +38,7 @@ import java.util.Vector;
  *
  * @author  Anil Hemrajani
  */
-public class DBConnectionMgr1 {
+public class DBConnectionServiceImpl {
     private Vector connections = new Vector(10);
     private String _driver = "com.mysql.cj.jdbc.Driver",
     _url = "jdbc:mysql://hxlab.co.kr:13307/xd_chat?characterEncoding=UTF-8&serverTimezone=UTC",
@@ -46,20 +48,20 @@ public class DBConnectionMgr1 {
     private boolean _traceOn = false;
     private boolean initialized = false;
     private int _openConnections = 50;
-    private static DBConnectionMgr1 instance = null;
+    private static DBConnectionServiceImpl instance = null;
 
-    private DBConnectionMgr1() {
+    private DBConnectionServiceImpl() {
     }
 
     /** Use this method to set the maximum number of open connections before
      unused connections are closed.
      */
 
-    public static DBConnectionMgr1 getInstance() {
+    public static DBConnectionServiceImpl getInstance() {
         if (instance == null) {
-            synchronized (DBConnectionMgr1.class) {
+            synchronized (DBConnectionServiceImpl.class) {
                 if (instance == null) {
-                    instance = new DBConnectionMgr1();
+                    instance = new DBConnectionServiceImpl();
                 }
             }
         }
@@ -314,12 +316,3 @@ public class DBConnectionMgr1 {
 }
 
 
-class ConnectionObject {
-    public java.sql.Connection connection = null;
-    public boolean inUse = false;
-
-    public ConnectionObject(Connection c, boolean useFlag) {
-        connection = c;
-        inUse = useFlag;
-    }
-}
