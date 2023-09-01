@@ -9,7 +9,6 @@ import java.util.Vector;
 
 import com.dita.xd.controller.MessageController;
 import com.dita.xd.model.ChatMessageBean;
-import com.dita.xd.controller.ChatMessageMgr;
 import com.dita.xd.util.server.MessageProtocol;
 
 public class XdChatServer {
@@ -17,14 +16,12 @@ public class XdChatServer {
 
 	protected Vector<Client> clients;
 	protected ServerSocket server;
-	protected ChatMessageMgr mgr;
 	protected MessageController controller;
 
 	public XdChatServer() {
 		try {
 			clients = new Vector<>();                            // Client3 의 형식을 담을 수 있는 벡터 vc 생성
 			server = new ServerSocket(PORT);                     // socket 서버(포트 : 8003) 를 만듦
-			mgr = new ChatMessageMgr();                                     // 챗 관리자도 생성
 			controller = new MessageController();
 		} catch (Exception e) {                                         // 3 중 하나라도 문제 생기면 에러 뜨고 종료
 			System.err.println("Error in Server");
@@ -172,6 +169,7 @@ public class XdChatServer {
 					bean.setContent(content);                //  ChatMessage 내용
 					bean.setChatroomId(chatroomId);            // 채팅방 세션의 아이디(int형), 일단 0으로 지정했음.
 					bean.setUserId(userid);                        // 작성자 아이디
+					bean.setReadState("0");
 
 					//bean.setCreatedAt(createdat);                // 작성된 시간
 					//bean.setReadState(readstate);             	// 읽음 상태 0으로 지정
