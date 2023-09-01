@@ -28,7 +28,7 @@ public class MessageController {
         return svc.getMessages(chatroomId, userId);
     }
 
-    public Vector<ChatMessageBean> getMessages(int chatroomId, String userId, Timestamp targetAt) {
+    public Vector<ChatMessageBean> getMessages(int chatroomId, String userId, String targetAt) {
         return svc.getMessages(chatroomId, userId, targetAt);
     }
 }

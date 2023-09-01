@@ -14,16 +14,16 @@ public class MessageDriver {
 //        System.out.println(impl.getMessage(2));
 //
 //        impl.getMessages(1).forEach(bean -> {
-//            System.out.printf("[%s(@%s)]%-20s \t%s\n",
-//                    bean.getUserNickname(), bean.getUserId(), bean.getContent(), bean.getCreatedAt());
+//            System.out.printf("%s [%s(@%s)]\t %s\n",
+//                    bean.getCreatedAt(), bean.getUserNickname(), bean.getUserId(), bean.getContent());
 //        });
 //        impl.getMessages(1, "bbb").forEach( bean -> {
-//            System.out.printf("[%s(@%s)]%-20s \t%s\n",
-//                    bean.getUserNickname(), bean.getUserId(), bean.getContent(), bean.getCreatedAt());
+//            System.out.printf("%s [%s(@%s)]\t %s\n",
+//                    bean.getCreatedAt(), bean.getUserNickname(), bean.getUserId(), bean.getContent());
 //        });
-        impl.getMessages(1, "aaa", Timestamp.valueOf("2023-08-31 23:59:59")).forEach(bean -> {
-            System.out.printf("[%s(@%s)]%-20s \t%s\n",
-                    bean.getUserNickname(), bean.getUserId(), bean.getContent(), bean.getCreatedAt());
+        impl.getMessages(1, "aaa", "2023-09-01 23:59:59").forEach(bean -> {
+            System.out.printf("%s [%s(@%s)]\t %s\n",
+                    bean.getCreatedAt(), bean.getUserNickname(), bean.getUserId(), bean.getContent());
         });
     }
 }

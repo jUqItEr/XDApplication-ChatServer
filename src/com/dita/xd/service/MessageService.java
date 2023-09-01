@@ -14,5 +14,5 @@ public interface MessageService extends Service {
     Vector<ChatMessageBean> getMessages(int chatroomId);
     // 채팅방에서 해당 사용자가 말한 내용을 불러옴.
     Vector<ChatMessageBean> getMessages(int chatroomId, String userId);
-    Vector<ChatMessageBean> getMessages(int chatroomId, String userId, Timestamp targetAt);
+    Vector<ChatMessageBean> getMessages(int chatroomId, String userId, String targetAt);
 }

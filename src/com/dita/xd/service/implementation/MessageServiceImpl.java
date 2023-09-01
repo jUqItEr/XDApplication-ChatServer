@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Vector;
 
+import static com.dita.xd.util.helper.ResultSetExtractHelper.extractChatMessageBean;
+
 public class MessageServiceImpl implements MessageService {
     private final DBConnectionServiceImpl pool;
 
@@ -21,7 +23,7 @@ public class MessageServiceImpl implements MessageService {
     public boolean appendMessage(ChatMessageBean bean) {
         Connection conn = null;
         PreparedStatement pstmt = null;
-        String sql = "INSERT INTO chat_message_tbl VALUES (NULL, ?, ?, ?, NOW(), ?)";
+        String sql = "insert into chat_message_tbl values (null, ?, ?, ?, now(), ?)";
         boolean flag = false;
 
         try {
@@ -46,10 +48,7 @@ public class MessageServiceImpl implements MessageService {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "SELECT cmt.id, cmt.content, cmt.chatroom_tbl_id, ut.id, " +
-                "ut.nickname, ut.profile_image, cmt.created_at, cmt.read_state " +
-                "FROM user_tbl ut JOIN chat_message_tbl cmt " +
-                "ON cmt.user_tbl_id = ut.id WHERE cmt.user_tbl_id=?";
+        String sql = "select * from chat_logs_view where id = ?";
         ChatMessageBean bean = null;
 
         try {
@@ -59,7 +58,7 @@ public class MessageServiceImpl implements MessageService {
             rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                bean = ResultSetExtractHelper.extractChatMessageBean(rs);
+                bean = extractChatMessageBean(rs);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -74,10 +73,7 @@ public class MessageServiceImpl implements MessageService {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "SELECT cmt.id, cmt.content, cmt.chatroom_tbl_id, ut.id, " +
-                "ut.nickname, ut.profile_image, cmt.created_at, cmt.read_state " +
-                "FROM user_tbl ut JOIN chat_message_tbl cmt " +
-                "ON cmt.user_tbl_id = ut.id WHERE cmt.chatroom_tbl_id=? ORDER BY cmt.id DESC";
+        String sql = "select * from chat_logs_view where chatroom_id = ?";
         Vector<ChatMessageBean> beans = new Vector<>();
 
         try {
@@ -87,9 +83,7 @@ public class MessageServiceImpl implements MessageService {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                beans.addElement(
-                        ResultSetExtractHelper.extractChatMessageBean(rs)
-                );
+                beans.addElement(extractChatMessageBean(rs));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -104,10 +98,7 @@ public class MessageServiceImpl implements MessageService {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "SELECT cmt.id, cmt.content, cmt.chatroom_tbl_id, ut.id, " +
-                "ut.nickname, ut.profile_image, cmt.created_at, cmt.read_state " +
-                "FROM user_tbl ut JOIN chat_message_tbl cmt " +
-                "ON cmt.user_tbl_id = ut.id WHERE cmt.chatroom_tbl_id=? AND cmt.user_tbl_id=? ORDER BY cmt.id DESC";
+        String sql = "select * from chat_logs_view where chatroom_id = ? and user_id = ?";
         Vector<ChatMessageBean> beans = new Vector<>();
 
         try {
@@ -118,9 +109,7 @@ public class MessageServiceImpl implements MessageService {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                beans.addElement(
-                        ResultSetExtractHelper.extractChatMessageBean(rs)
-                );
+                beans.addElement(extractChatMessageBean(rs));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -131,15 +120,12 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Vector<ChatMessageBean> getMessages(int chatroomId, String userId, Timestamp targetAt) {
+    public Vector<ChatMessageBean> getMessages(int chatroomId, String userId, String targetAt) {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "SELECT cmt.id, cmt.content, cmt.chatroom_tbl_id, ut.id, " +
-                "ut.nickname, ut.profile_image, cmt.created_at, cmt.read_state " +
-                "FROM user_tbl ut JOIN chat_message_tbl cmt " +
-                "ON cmt.user_tbl_id = ut.id WHERE cmt.chatroom_tbl_id=? AND cmt.user_tbl_id=? AND " +
-                "DATE(cmt.created_at)=DATE(?) ORDER BY cmt.id DESC";
+        String sql = "select * from chat_logs_view where chatroom_id = ? and user_id = ? " +
+                "and date(created_at) = date(?)";
         Vector<ChatMessageBean> beans = new Vector<>();
 
         try {
@@ -147,9 +133,12 @@ public class MessageServiceImpl implements MessageService {
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, chatroomId);
             pstmt.setString(2, userId);
-            pstmt.setTimestamp(3, targetAt);
+            pstmt.setString(3, targetAt);
             rs = pstmt.executeQuery();
 
+            while (rs.next()) {
+                beans.addElement(extractChatMessageBean(rs));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
