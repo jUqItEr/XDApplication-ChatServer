@@ -124,7 +124,7 @@ public class XdChatServer {
 					sendAllMessage(MessageProtocol.CHAT_LIST +
 							MessageProtocol.SEPARATOR + getIdList());
 				}
-				case MessageProtocol.BYE -> throw new Exception("User want close");
+				case MessageProtocol.BYE -> throw new Exception("User has been logout");
 				case MessageProtocol.CHAT_ALL -> {
 					token = data.split(";");
 					String userId = token[0];
