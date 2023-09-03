@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.Vector;
 
 import com.dita.xd.controller.MessageController;
+import com.dita.xd.controller.UserController;
 import com.dita.xd.model.ChatMessageBean;
 import com.dita.xd.util.server.MessageProtocol;
 
@@ -16,13 +17,15 @@ public class XdChatServer {
 
 	protected Vector<XdClient> clients;
 	protected ServerSocket server;
-	protected MessageController controller;
+	protected MessageController messageController;
+	protected UserController userController;
 
 	public XdChatServer() {
 		try {
 			clients = new Vector<>();
 			server = new ServerSocket(PORT);
-			controller = new MessageController();
+			messageController = new MessageController();
+			userController = new UserController();
 		} catch (Exception e) {
 			System.err.println("Error in Server");
 			e.printStackTrace();
@@ -99,46 +102,55 @@ public class XdChatServer {
 				}
 			} catch (Exception e) {
 				removeClient(this);
-				System.err.println(sock + "[" + userId + "] has been disconnected");
+				System.err.println(sock + "[" + chatroomId + ',' + userId + "] has been disconnected");
 			}
 		}
 
-		public void process(String line) {
-			System.out.println("line:" + line);
-			int idx = line.indexOf(MessageProtocol.SEPARATOR);
-			String cmd = line.substring(0, idx);
-			String data = line.substring(idx + 1);
+		public void process(String line) throws Exception {
+			String[] token = line.split(MessageProtocol.SEPARATOR);
+			String cmd = token[0];
+			String data = token[1];
+
+			System.out.println("Client line: " + line);
 
 			switch (cmd) {
 				case MessageProtocol.ID -> {
-					idx = data.indexOf(';');
-					cmd = data.substring(0, idx);
-					data = data.substring(idx + 1);
-
-					userId = cmd;
-					chatroomId = Integer.parseInt(data);
+					token = data.split(";");
+					userId = token[0];
+					chatroomId = Integer.parseInt(token[1]);
 
 					sendMessage(MessageProtocol.ID +
 							MessageProtocol.SEPARATOR + "T");
 					sendAllMessage(MessageProtocol.CHAT_LIST +
 							MessageProtocol.SEPARATOR + getIdList());
 				}
+				case MessageProtocol.BYE -> throw new Exception("User want close");
 				case MessageProtocol.CHAT_ALL -> {
-					idx = data.indexOf(';');
-					String userid = data.substring(0, idx);
-					String content = data.substring(idx + 1);
-					sendAllMessage(MessageProtocol.CHAT_ALL + MessageProtocol.SEPARATOR +
-							"[" + userId + "]" + content);
-					ChatMessageBean bean = new ChatMessageBean();
-					bean.setContent(content);
-					bean.setChatroomId(chatroomId);
-					bean.setUserId(userid);
-					bean.setReadState("0");
+					token = data.split(";");
+					String userId = token[0];
+					String content = token[2];
+					int chatroomId = Integer.parseInt(token[1]);
 
-					System.out.println("Database injected: " + controller.appendMessage(bean));
+					if (this.chatroomId == chatroomId) {
+						ChatMessageBean bean = new ChatMessageBean();
+						bean.setContent(content);
+						bean.setChatroomId(chatroomId);
+						bean.setUserId(userId);
+						bean.setReadState("0");
+
+						System.out.println("Database injected: " + messageController.appendMessage(bean));
+						sendAllMessage(line);
+					}
+				}
+				case MessageProtocol.DISMISS -> {
+					token = data.split(";");
+					String userId = token[0];
+					int chatroomId = Integer.parseInt(token[1]);
+					userController.dismissUser(chatroomId, userId);
+					sendAllMessage(line);
 				}
 				case MessageProtocol.MSG_LIST -> {
-					Vector<ChatMessageBean> messages = controller.getMessages(chatroomId);
+					Vector<ChatMessageBean> messages = messageController.getMessages(chatroomId);
 					StringBuilder str = new StringBuilder();
 
 					for (ChatMessageBean bean : messages) {

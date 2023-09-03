@@ -35,6 +35,12 @@ public class MessageServiceImpl implements MessageService {
             pstmt.setString(4, String.valueOf(bean.getReadState()));
 
             flag = pstmt.executeUpdate() == 1;
+
+            sql = "update chatroom_tbl set updated_at = now() where id = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, bean.getChatroomId());
+
+            flag &= pstmt.executeUpdate() == 1;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
